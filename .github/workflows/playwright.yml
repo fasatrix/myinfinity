@@ -8,7 +8,7 @@ on:
     - cron: '0 9 * * 1-5'
 jobs:
   test:
-    runs-on: ubuntu-latest-m
+    runs-on: ubuntu-latest
     container:      
       ## build and test must run on the same os to share cache
       image: mcr.microsoft.com/playwright:v1.49.1-jammy
