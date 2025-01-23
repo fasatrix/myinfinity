@@ -8,6 +8,7 @@ on:
     - cron: '0 9 * * 1-5'
 jobs:
   test:
+    timeout-minutes: 2
     runs-on: ubuntu-latest
     container:      
       ## build and test must run on the same os to share cache
