@@ -15,7 +15,7 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.49.1-jammy
     env:
       USERNAME: ${{ secrets.USERNAME }}
-      CUST_PASSWORD: ${{ secrets.PASSWORD }}
+      PASSWORD: ${{ secrets.PASSWORD }}
       URL: ${{ secrets.URL }}
     steps:
     - uses: actions/checkout@v4
