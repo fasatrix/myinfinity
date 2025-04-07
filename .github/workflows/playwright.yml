@@ -2,22 +2,29 @@ name: Playwright Tests
 on:
   workflow_dispatch:
   schedule:
-    # * is a special character in YAML so you have to quote this string
-    # This example triggers the workflow every day at 5:30 and 17:30 UTC
-    # https://crontab.cronhub.io/
-    - cron: '0 7 * * 1-5'
+    - cron: '0 7 * * 1-5' # Lunedì - Venerdì alle 07:00 UTC
+
 jobs:
   test:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    container:      
-      ## build and test must run on the same os to share cache
+    container:
       image: mcr.microsoft.com/playwright:v1.49.1-jammy
     env:
       USERNAME: ${{ secrets.USERNAME }}
       PASSWORD: ${{ secrets.PASSWORD }}
       URL: ${{ secrets.URL }}
     steps:
+    - name: Skip if date is in excluded list
+      run: |
+        excluded_dates=("2025-04-08" "2025-04-18" "2025-04-21" "2025-04-22" "2025-04-23" "2025-04-24" "2025-04-25" "2025-05-02")
+        today=$(date -u +'%Y-%m-%d')
+        for date in "${excluded_dates[@]}"; do
+          if [ "$today" == "$date" ]; then
+            echo "Skipping workflow on excluded date: $today"
+            exit 0
+          fi
+        done
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
