@@ -1,4 +1,5 @@
 name: Playwright Tests
+
 on:
   workflow_dispatch:
   schedule:
@@ -15,29 +16,36 @@ jobs:
       PASSWORD: ${{ secrets.PASSWORD }}
       URL: ${{ secrets.URL }}
     steps:
-    - name: Skip if date is in excluded list
-      run: |
-        excluded_dates=("2025-04-08" "2025-04-18" "2025-04-21" "2025-04-22" "2025-04-23" "2025-04-24" "2025-04-25" "2025-05-02")
-        today=$(date -u +'%Y-%m-%d')
-        for date in "${excluded_dates[@]}"; do
-          if [ "$today" == "$date" ]; then
-            echo "Skipping workflow on excluded date: $today"
-            exit 0
-          fi
-        done
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+      - name: Skip if date is in excluded list
+        shell: bash
+        run: |
+          excluded_dates=("2025-04-09" "2025-04-18" "2025-04-21" "2025-04-22" "2025-04-23" "2025-04-24" "2025-04-25" "2025-05-02")
+          today=$(date -u +'%Y-%m-%d')
+          for date in "${excluded_dates[@]}"; do
+            if [ "$today" == "$date" ]; then
+              echo "Skipping workflow on excluded date: $today"
+              exit 0
+            fi
+          done
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: npx playwright test
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
