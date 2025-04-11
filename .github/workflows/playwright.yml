@@ -11,6 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.49.1-jammy
+    env:
+      USERNAME: ${{ secrets.USERNAME }}
+      PASSWORD: ${{ secrets.PASSWORD }}
+      URL: ${{ secrets.URL }}  
     outputs:
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
     steps:
