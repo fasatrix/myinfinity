@@ -21,7 +21,7 @@ jobs:
       - id: skip_check
         shell: bash
         run: |
-          excluded_dates=("2025-04-10" "2025-04-18" "2025-04-21" "2025-04-22" "2025-04-23" "2025-04-24" "2025-04-25" "2025-05-01" "2025-05-02")
+          excluded_dates=("2025-06-02")
           today=$(date -u +'%Y-%m-%d')
           for date in "${excluded_dates[@]}"; do
             if [ "$today" == "$date" ]; then
