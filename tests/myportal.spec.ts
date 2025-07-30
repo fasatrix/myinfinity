@@ -7,3 +7,4 @@ test('test', async ({ page }) => {
   await page.getByRole('button', { name: 'Login' }).click();
   await page.locator('iframe[name="Main"]').contentFrame().getByRole('button', { name: 'Presenza' }).click();
 });
+
