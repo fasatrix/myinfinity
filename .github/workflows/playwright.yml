@@ -21,15 +21,23 @@ jobs:
       - id: skip_check
         shell: bash
         run: |
-          excluded_dates=("2025-06-02")
+          # Define excluded date ranges
+          excluded_ranges=(
+            "2025-08-11:2025-08-15"
+            "2025-08-25:2025-08-29"
+          )
           today=$(date -u +'%Y-%m-%d')
-          for date in "${excluded_dates[@]}"; do
-            if [ "$today" == "$date" ]; then
+
+          for range in "${excluded_ranges[@]}"; do
+            start=$(echo "$range" | cut -d':' -f1)
+            end=$(echo "$range" | cut -d':' -f2)
+            if [[ "$today" >="$start" && "$today" <= "$end" ]]; then
               echo "should_skip=true" >> $GITHUB_OUTPUT
               echo "Skipping workflow on excluded date: $today"
               exit 0
             fi
           done
+
           echo "should_skip=false" >> $GITHUB_OUTPUT
 
       - uses: actions/checkout@v4
