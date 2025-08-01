@@ -3,7 +3,7 @@ name: Playwright Tests
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 7 * * 1-5'
+    - cron: '0 7 * * 1-5'  # Runs at 07:00 UTC Monday–Friday
 
 jobs:
   test:
@@ -14,7 +14,7 @@ jobs:
     env:
       USERNAME: ${{ secrets.USERNAME }}
       PASSWORD: ${{ secrets.PASSWORD }}
-      URL: ${{ secrets.URL }}  
+      URL: ${{ secrets.URL }}
     outputs:
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
     steps:
@@ -31,7 +31,8 @@ jobs:
           for range in "${excluded_ranges[@]}"; do
             start=$(echo "$range" | cut -d':' -f1)
             end=$(echo "$range" | cut -d':' -f2)
-            if [[ "$today" >="$start" && "$today" <= "$end" ]]; then
+
+            if [[ "$today" == "$start" || "$today" == "$end" || ( "$today" > "$start" && "$today" < "$end" ) ]]; then
               echo "should_skip=true" >> $GITHUB_OUTPUT
               echo "Skipping workflow on excluded date: $today"
               exit 0
@@ -66,3 +67,4 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+
