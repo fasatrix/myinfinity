@@ -21,24 +21,45 @@ jobs:
       - id: skip_check
         shell: bash
         run: |
-          # Define excluded date ranges
-          excluded_ranges=(
-            "2025-08-11:2025-09-18"
+          # --- CONFIGURAZIONE ---
+          # Fuso orario per la valutazione della data odierna (usa 'UTC' o 'Europe/Rome')
+          TZ_VAL='UTC'
+
+          # Date singole da escludere (YYYY-MM-DD)
+          excluded_dates=(
+            "2025-09-18"
           )
-          today=$(date -u +'%Y-%m-%d')
 
-          for range in "${excluded_ranges[@]}"; do
-            start=$(echo "$range" | cut -d':' -f1)
-            end=$(echo "$range" | cut -d':' -f2)
+          # Range di date da escludere (YYYY-MM-DD:YYYY-MM-DD) - ESTREMI INCLUSI
+          excluded_ranges=(
+            "2025-10-20:2025-10-31"
+          )
+          # Per escludere solo l'interno del range, togli gli uguali nel test e lascia solo:  "$today" > "$start" && "$today" < "$end"
 
-            if [[ "$today" == "$start" || "$today" == "$end" || ( "$today" > "$start" && "$today" < "$end" ) ]]; then
-              echo "should_skip=true" >> $GITHUB_OUTPUT
-              echo "Skipping workflow on excluded date: $today"
+          # --- LOGICA ---
+          today=$(TZ="$TZ_VAL" date +'%Y-%m-%d')
+
+          # Esclusione date singole
+          for d in "${excluded_dates[@]}"; do
+            if [[ "$today" == "$d" ]]; then
+              echo "should_skip=true" >> "$GITHUB_OUTPUT"
+              echo "Skipping workflow on excluded single date: $today"
               exit 0
             fi
           done
 
-          echo "should_skip=false" >> $GITHUB_OUTPUT
+          # Esclusione range (estremi inclusi)
+          for range in "${excluded_ranges[@]}"; do
+            start=${range%%:*}
+            end=${range##*:}
+            if [[ "$today" == "$start" || "$today" == "$end" || ( "$today" > "$start" && "$today" < "$end" ) ]]; then
+              echo "should_skip=true" >> "$GITHUB_OUTPUT"
+              echo "Skipping workflow on excluded range ($start..$end): $today"
+              exit 0
+            fi
+          done
+
+          echo "should_skip=false" >> "$GITHUB_OUTPUT"
 
       - uses: actions/checkout@v4
         if: ${{ steps.skip_check.outputs.should_skip != 'true' }}
@@ -66,4 +87,3 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-
