@@ -16,7 +16,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
     /* Fail the build on CI if you accidentally left test.only in the source code. */
   use: {
-    baseURL: process.env.URL
+    baseURL: process.env.URL,
   },
 
   /* Configure projects for major browsers */
