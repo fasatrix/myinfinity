@@ -28,11 +28,13 @@ jobs:
           excluded_dates=(
             "2025-09-18"
             "2026-05-01"
+            "2026-04-14"
           )
 
           # Range di date da escludere (YYYY-MM-DD:YYYY-MM-DD) - ESTREMI INCLUSI
           excluded_ranges=(
             "2026-04-04:2026-04-06" # Dal 04-04-2026 (Sabato) al 06-04-2026 (Lunedi)
+            "2026-04-14:2026-04-14"
             "2026-05-01:2026-05-01"
           )
           # Per escludere solo l'interno del range, togli gli uguali nel test e lascia solo:  "$today" > "$start" && "$today" < "$end"
