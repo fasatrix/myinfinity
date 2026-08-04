@@ -38,6 +38,7 @@ jobs:
             "2026-04-14:2026-04-14"
             "2026-05-01:2026-05-01"
             "2026-06-02:2026-06-02"
+            "2026-08-17:2026-09-01"
           )
           # Per escludere solo l'interno del range, togli gli uguali nel test e lascia solo:  "$today" > "$start" && "$today" < "$end"
 
